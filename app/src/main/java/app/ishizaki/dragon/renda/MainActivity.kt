@@ -1,10 +1,13 @@
 package app.ishizaki.dragon.renda
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import app.ishizaki.dragon.renda.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -21,11 +24,40 @@ class MainActivity : AppCompatActivity() {
 //            insets
 //        }
 
-        var tapCout: Int = 0
+        var tapCount: Int = 0
+
+        var second = 10
+
+        var timer: CountDownTimer = object : CountDownTimer(10000, 1000){
+            override fun onFinish() {
+                binding.startButton.isVisible = true
+                binding.tapButton.backgroundTintList =
+                    ContextCompat.getColorStateList(this@MainActivity, R.color.gray)
+                second = 10
+                tapCount = 0
+
+            }
+
+            override fun onTick(millisUntilFinished: Long) {
+                binding.tapButton.backgroundTintList=
+                    ContextCompat.getColorStateList(this@MainActivity, R.color.pink)
+                second -= 1
+                binding.secondText.text = second.toString()
+            }
+        }
+
+        binding.startButton.setOnClickListener{
+            binding.countText.text = tapCount.toString()
+            binding.startButton.isVisible = false
+            timer.start()
+        }
+
 
         binding.tapButton.setOnClickListener{
-            tapCout += 1
-            binding.countText.text = tapCout.toString()
+            if (second < 10){
+                tapCount += 1
+                binding.countText.text = tapCount.toString()
+            }
         }
     }
 }
